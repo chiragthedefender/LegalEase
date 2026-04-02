@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dharma Lens – Legal Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0B0F19;--ink2:#111827;--ink3:#1A2235;--ink4:#243049;
+  --ivory:#F8F5EE;--ivory2:#EDE8DC;--ivory3:#D8D0BF;
+  --gold:#B8922A;--gold-l:#D4AA4A;--gold-xl:#F0CC6A;--gold-d:#7A5F1A;
+  --ruby:#9B2335;--sapphire:#1A4A8A;--jade:#1A6A45;--amethyst:#5A2A8A;
+  --teal:#1A6A6A;--amber:#8A5A1A;--crimson:#7A1A2A;
+  --text:#E8E4DA;--muted:#9A927E;--dim:#5A5448;
+  --green:#3AAA6A;--red:#CC3A4A;--blue:#3A7ACC;
+  --glow:rgba(184,146,42,.15);--glow2:rgba(184,146,42,.08);
+  --r:3px;--r2:6px;--r3:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;}
+
+/* ─ INTRO ────────────────────────────────────────── */
+#intro{position:fixed;inset:0;z-index:9999;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+.lens-outer{position:relative;width:160px;height:160px;margin-bottom:40px;}
+.lr1{position:absolute;inset:0;border-radius:50%;border:1px solid var(--gold);animation:lspin 10s linear infinite;}
+.lr2{position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(184,146,42,.4);animation:lspin 6s linear infinite reverse;}
+.lr3{position:absolute;inset:32px;border-radius:50%;border:1px solid rgba(184,146,42,.2);animation:lspin 4s linear infinite;}
+.ldot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.ldot::before{content:'';width:10px;height:10px;background:var(--gold);border-radius:50%;box-shadow:0 0 20px var(--gold),0 0 40px rgba(184,146,42,.4);}
+.lscan{position:absolute;top:32px;left:32px;width:96px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-l),transparent);animation:lsc 1.8s ease-in-out infinite;}
+.lorb{width:5px;height:5px;background:var(--gold-l);border-radius:50%;position:absolute;top:50%;left:0;transform-origin:80px 0;animation:lorb 3s linear infinite;}
+@keyframes lspin{to{transform:rotate(360deg);}}
+@keyframes lsc{0%,100%{top:32px;}50%{top:128px;}}
+@keyframes lorb{to{transform:rotate(360deg);}}
+.intro-title{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;color:var(--gold-l);letter-spacing:6px;opacity:0;animation:ifade 1s .9s forwards;}
+.intro-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:5px;text-transform:uppercase;margin-top:8px;opacity:0;animation:ifade 1s 1.3s forwards;}
+.intro-bar{margin-top:48px;width:260px;opacity:0;animation:ifade .4s 1.9s forwards;}
+.intro-track{height:1px;background:rgba(184,146,42,.15);}
+.intro-fill{height:1px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));width:0;animation:ibar 2s 2.1s forwards;box-shadow:0 0 6px var(--gold);}
+.intro-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold-d);margin-top:7px;text-align:center;}
+@keyframes ifade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes ibar{to{width:100%;}}
+#intro.hide{animation:iout .6s forwards;}@keyframes iout{to{opacity:0;pointer-events:none;}}
+
+/* ─ LAYOUT ───────────────────────────────────────── */
+#app{display:none;min-height:100vh;flex-direction:column;}#app.on{display:flex;}
+.bg-texture{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(ellipse 800px 600px at 20% 20%,rgba(184,146,42,.04) 0%,transparent 60%),
+    radial-gradient(ellipse 600px 800px at 80% 80%,rgba(26,74,138,.06) 0%,transparent 60%),
+    linear-gradient(rgba(184,146,42,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(184,146,42,.03) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,50px 50px,50px 50px;}
+
+/* ─ HEADER ───────────────────────────────────────── */
+.hdr{position:sticky;top:0;z-index:100;
+  background:rgba(11,15,25,.94);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(184,146,42,.12);}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(184,146,42,.3),transparent);}
+.hdr-i{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 32px;}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.logo-emblem{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;position:relative;}
+.logo-emblem::before{content:'';position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(184,146,42,.3);}
+.logo-emblem::after{content:'';width:8px;height:8px;background:var(--gold);border-radius:50%;box-shadow:0 0 10px rgba(184,146,42,.6);}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold-l);letter-spacing:1px;}
+.logo-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:3px;text-transform:uppercase;display:block;margin-top:-2px;}
+.nav{display:flex;gap:1px;padding:6px;background:rgba(255,255,255,.02);border:1px solid rgba(184,146,42,.08);border-radius:var(--r2);}
+.nb{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;padding:7px 14px;border-radius:var(--r);transition:all .2s;}
+.nb:hover{color:var(--gold-l);background:rgba(184,146,42,.06);}
+.nb.on{color:var(--ink);background:var(--gold);font-weight:500;}
+.hdr-r{display:flex;align-items:center;gap:14px;}
+.conn-wrap{display:flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid rgba(184,146,42,.12);border-radius:20px;background:rgba(184,146,42,.03);}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(--dim);transition:all .4s;flex-shrink:0;}
+.cdot.live{background:var(--green);box-shadow:0 0 8px var(--green);animation:cpulse 2s infinite;}
+.cdot.dead{background:var(--red);}
+@keyframes cpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.conn-txt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.pill-badge{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);border:1px solid rgba(184,146,42,.25);padding:4px 10px;border-radius:20px;letter-spacing:1px;background:rgba(184,146,42,.04);}
+
+/* ─ PAGES ────────────────────────────────────────── */
+.wrap{position:relative;z-index:1;flex:1;}
+.page{display:none;padding:36px 32px;max-width:1440px;margin:0 auto;}
+.page.on{display:block;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
+.section-head{margin-bottom:28px;}
+.section-head h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;line-height:1.2;}
+.section-head p{font-size:14px;color:var(--muted);margin-top:5px;font-style:italic;}
+.breadcrumb{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.breadcrumb a{color:var(--dim);cursor:pointer;transition:color .2s;}.breadcrumb a:hover{color:var(--gold);}
+.breadcrumb span{color:var(--gold);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,42,.2),transparent);margin:22px 0;}
+
+/* ─ HERO ─────────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;border-radius:var(--r3);border:1px solid rgba(184,146,42,.12);
+  background:linear-gradient(135deg,var(--ink2) 0%,var(--ink3) 50%,var(--ink2) 100%);
+  padding:56px 56px 52px;margin-bottom:28px;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;
+  background:radial-gradient(circle,rgba(184,146,42,.07) 0%,transparent 65%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(184,146,42,.3),transparent);}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-label::before{content:'';width:24px;height:1px;background:var(--gold);}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1.05;margin-bottom:14px;color:var(--ivory);}
+.hero h1 em{color:var(--gold-l);font-style:normal;}
+.hero-desc{font-size:15px;color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:32px;font-style:italic;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;padding:12px 22px;border-radius:var(--r);cursor:pointer;transition:all .25s;font-weight:500;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:var(--gold);color:var(--ink);}.btn-primary:hover{background:var(--gold-xl);transform:translateY(-1px);box-shadow:0 8px 28px rgba(184,146,42,.35);}
+.btn-ghost{background:transparent;color:var(--gold-l);border:1px solid rgba(184,146,42,.25);}.btn-ghost:hover{border-color:var(--gold);background:rgba(184,146,42,.06);}
+.btn-sm{font-size:9px;padding:7px 14px;}
+
+/* ─ STATS ────────────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:22px 20px;position:relative;overflow:hidden;transition:all .3s;}
+.stat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;}
+.stat-card:hover{border-color:rgba(184,146,42,.25);transform:translateY(-2px);}
+.stat-card:hover::before{opacity:1;}
+.stat-ico{font-size:18px;margin-bottom:10px;opacity:.7;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--gold-l);line-height:1;}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px;}
+
+/* ─ MODULE CARDS ─────────────────────────────────── */
+.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.module-card{background:var(--ink2);border:1px solid rgba(184,146,42,.08);border-radius:var(--r2);padding:26px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.module-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l),var(--gold-d));opacity:0;transition:opacity .3s;}
+.module-card:hover{border-color:rgba(184,146,42,.25);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.module-card:hover::before{opacity:1;}
+.mc-icon{font-size:22px;margin-bottom:13px;}
+.mc-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;margin-bottom:6px;color:var(--ivory);}
+.mc-desc{font-size:13px;color:var(--muted);line-height:1.65;}
+.mc-link{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);margin-top:14px;letter-spacing:1px;}
+
+/* ─ UPLOAD ───────────────────────────────────────── */
+.drop-zone{border:1px dashed rgba(184,146,42,.25);border-radius:var(--r2);padding:56px 32px;text-align:center;cursor:pointer;transition:all .3s;background:var(--ink2);position:relative;overflow:hidden;}
+.drop-zone::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(184,146,42,.04),transparent 70%);opacity:0;transition:opacity .3s;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--gold);border-style:solid;}
+.drop-zone:hover::before,.drop-zone.drag::before{opacity:1;}
+.dz-icon{font-size:44px;margin-bottom:14px;opacity:.5;}
+.dz-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:6px;}
+.dz-sub{font-size:14px;color:var(--muted);}
+.dz-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:14px;letter-spacing:1px;}
+.dz-types{display:flex;justify-content:center;gap:8px;margin-top:14px;}
+.dz-type{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid rgba(184,146,42,.2);border-radius:20px;color:var(--gold-d);}
+.valid-hint{background:rgba(26,106,69,.08);border:1px solid rgba(26,106,69,.2);border-radius:var(--r2);padding:14px 16px;margin-top:16px;font-size:12px;color:rgba(58,170,106,.8);font-family:'JetBrains Mono',monospace;text-align:left;}
+
+/* ─ PIPELINE ─────────────────────────────────────── */
+.pipeline-box{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:26px;margin-top:18px;}
+.step-row{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.step-row:last-child{border-bottom:none;}
+.step-orb{width:32px;height:32px;border-radius:50%;border:1px solid rgba(184,146,42,.2);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .3s;font-family:'JetBrains Mono',monospace;}
+.step-orb.done{border-color:var(--green);color:var(--green);background:rgba(58,170,106,.06);}
+.step-orb.run{border-color:var(--gold);color:var(--gold);animation:orbpulse 1s infinite;}
+.step-orb.wait{opacity:.25;}
+@keyframes orbpulse{0%,100%{box-shadow:0 0 0 0 rgba(184,146,42,.3);}50%{box-shadow:0 0 0 5px rgba(184,146,42,0);}}
+.step-text{flex:1;}
+.step-name{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;color:var(--ivory);}
+.step-detail{font-size:12px;color:var(--muted);margin-top:3px;}
+.step-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:var(--r);}
+.step-badge.done{background:rgba(58,170,106,.1);color:var(--green);}
+.step-badge.run{background:rgba(184,146,42,.1);color:var(--gold);}
+.step-badge.wait{background:rgba(255,255,255,.04);color:var(--dim);}
+
+/* ─ SCENARIO ─────────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.pane{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:26px;}
+.field-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.scenario-input{width:100%;background:var(--ink3);border:1px solid rgba(184,146,42,.12);border-radius:var(--r);padding:14px;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.7;resize:vertical;min-height:150px;outline:none;transition:border .2s;}
+.scenario-input:focus{border-color:rgba(184,146,42,.35);}
+.scenario-input::placeholder{color:var(--dim);font-style:italic;}
+.output-field{font-size:14px;color:var(--text);line-height:1.75;padding:14px;background:var(--ink3);border:1px solid rgba(184,146,42,.1);border-radius:var(--r);min-height:52px;}
+.field-group{margin-bottom:18px;}
+.law-card{background:rgba(184,146,42,.04);border-left:2px solid var(--gold-d);padding:10px 14px;border-radius:0 var(--r) var(--r) 0;margin-top:8px;font-size:13px;line-height:1.65;}
+.law-card strong{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:3px;letter-spacing:.5px;}
+.example-pills{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.ex-pill{font-family:'JetBrains Mono',monospace;font-size:10px;padding:8px 12px;border:1px solid rgba(184,146,42,.12);border-radius:var(--r);cursor:pointer;color:var(--muted);transition:all .2s;line-height:1.4;}
+.ex-pill:hover{border-color:var(--gold);color:var(--gold-l);background:rgba(184,146,42,.05);}
+
+/* ─ RESULT CARD ──────────────────────────────────── */
+.result-card{background:var(--ink3);border:1px solid rgba(184,146,42,.12);border-radius:var(--r2);padding:20px;margin-top:14px;animation:slideup .35s ease;}
+@keyframes slideup{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.result-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.cat-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+.cat-tag.criminal{background:rgba(155,35,53,.12);border:1px solid rgba(155,35,53,.3);color:#E05C7A;}
+.cat-tag.civil{background:rgba(26,74,138,.12);border:1px solid rgba(26,74,138,.3);color:#5A9AE0;}
+.cat-tag.cyber{background:rgba(90,42,138,.12);border:1px solid rgba(90,42,138,.3);color:#AA7AE8;}
+.cat-tag.corporate{background:rgba(184,146,42,.12);border:1px solid rgba(184,146,42,.3);color:#D4AA4A;}
+.cat-tag.family{background:rgba(26,106,69,.12);border:1px solid rgba(26,106,69,.3);color:#4ACC8A;}
+.cat-tag.constitutional{background:rgba(138,90,26,.12);border:1px solid rgba(138,90,26,.3);color:#E0A04A;}
+.cat-tag.labor{background:rgba(106,106,26,.12);border:1px solid rgba(106,106,26,.3);color:#CCCC4A;}
+.cat-tag.ip{background:rgba(26,106,106,.12);border:1px solid rgba(26,106,106,.3);color:#4ACCCC;}
+.conf-badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 9px;border-radius:20px;background:rgba(58,170,106,.08);border:1px solid rgba(58,170,106,.2);color:var(--green);}
+.sev-badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,.04);color:var(--muted);}
+.kw-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.kw-tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border:1px solid rgba(184,146,42,.15);border-radius:var(--r);color:var(--dim);}
+.kw-tag.hi{border-color:rgba(184,146,42,.4);color:var(--gold);}
+
+/* ─ INSIGHTS ─────────────────────────────────────── */
+.ins-grid{display:grid;grid-template-columns:5fr 3fr;gap:18px;}
+.ins-main{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:28px;}
+.ins-side{display:flex;flex-direction:column;gap:14px;}
+.ins-card{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:20px;}
+.conf-bar-wrap{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:8px;}
+.conf-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-xl));border-radius:2px;transition:width 1.2s ease;}
+.score-bars{display:flex;flex-direction:column;gap:7px;margin-top:10px;}
+.score-row{display:flex;align-items:center;gap:10px;}
+.score-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:130px;flex-shrink:0;text-align:right;}
+.score-track{flex:1;height:15px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden;}
+.score-fill{height:100%;background:linear-gradient(90deg,rgba(184,146,42,.2),var(--gold));border-radius:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;}
+.score-val{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--ink);}
+
+/* ─ HISTORY ──────────────────────────────────────── */
+.history-list{display:flex;flex-direction:column;gap:8px;}
+.hist-item{background:var(--ink2);border:1px solid rgba(184,146,42,.08);border-radius:var(--r2);padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
+.hist-item:hover{border-color:rgba(184,146,42,.25);background:var(--ink3);}
+.hist-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.hist-body{flex:1;}
+.hist-title{font-size:14px;font-weight:500;line-height:1.3;color:var(--ivory);}
+.hist-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);margin-top:3px;letter-spacing:.5px;}
+.hist-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.hist-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);}
+.hist-conf{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);}
+.del-btn{font-size:12px;background:none;border:none;color:var(--dim);cursor:pointer;padding:3px 6px;border-radius:var(--r);transition:color .2s;}.del-btn:hover{color:var(--red);}
+
+/* ─ EMPTY ────────────────────────────────────────── */
+.empty-state{text-align:center;padding:60px;color:var(--dim);}
+.empty-state .ico{font-size:40px;margin-bottom:14px;opacity:.35;}
+.empty-state .txt{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+
+/* ─ LOADING ──────────────────────────────────────── */
+.spin-dots{display:inline-flex;gap:4px;margin-left:6px;}
+.spin-dots span{width:4px;height:4px;background:var(--gold);border-radius:50%;animation:sdot 1.2s ease-in-out infinite;}
+.spin-dots span:nth-child(2){animation-delay:.2s;}.spin-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes sdot{0%,80%,100%{transform:scale(.5);opacity:.3;}40%{transform:scale(1);opacity:1;}}
+
+/* ─ TOAST ────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink3);border:1px solid rgba(184,146,42,.2);border-left:2px solid var(--gold);border-radius:var(--r2);padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);z-index:9999;animation:tin .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.6);max-width:340px;letter-spacing:.3px;}
+.toast.error{border-left-color:var(--red);border-color:rgba(204,58,74,.2);}
+@keyframes tin{from{transform:translateX(60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* ─ ERROR CARD ───────────────────────────────────── */
+.err-card{margin-top:14px;padding:16px 18px;border-left:2px solid var(--red);background:rgba(155,35,53,.06);border-radius:0 var(--r2) var(--r2) 0;}
+.err-card .err-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
+.err-card .err-msg{font-size:13px;color:var(--muted);line-height:1.65;}
+.err-card .err-hint{font-size:12px;color:var(--dim);margin-top:8px;font-style:italic;}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--ink);}::-webkit-scrollbar-thumb{background:rgba(184,146,42,.2);border-radius:2px;}
+
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .module-grid{grid-template-columns:1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .ins-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:36px;}
+  .page{padding:20px 16px;}
+  .hdr-i{padding:0 16px;}
+  .nav{display:none;}
+}
+
+/* ═══════════════════════════════════════════
+   KNOWLEDGE CENTER
+═══════════════════════════════════════════ */
+.kc-top{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.kc-stat-card{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);padding:22px 20px;display:flex;align-items:center;gap:16px;transition:all .3s;}
+.kc-stat-card:hover{border-color:rgba(184,146,42,.25);transform:translateY(-2px);}
+.kc-stat-icon{font-size:26px;opacity:.8;}
+.kc-stat-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--gold-l);line-height:1;}
+.kc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+
+.kc-toolbar{display:flex;gap:12px;margin-bottom:22px;align-items:center;flex-wrap:wrap;}
+.kc-search-wrap{position:relative;flex:1;min-width:220px;}
+.kc-search-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.35;}
+.kc-search{width:100%;background:var(--ink2);border:1px solid rgba(184,146,42,.14);border-radius:var(--r2);padding:11px 16px 11px 42px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border .2s;}
+.kc-search:focus{border-color:rgba(184,146,42,.4);}
+.kc-search::placeholder{color:var(--dim);}
+.kc-filters{display:flex;gap:6px;flex-wrap:wrap;}
+.kc-filter{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 15px;border-radius:20px;border:1px solid rgba(184,146,42,.14);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.kc-filter:hover{border-color:var(--gold);color:var(--gold-l);}
+.kc-filter.active{background:var(--gold);color:var(--ink);border-color:var(--gold);font-weight:600;}
+
+.kc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.kc-empty{grid-column:span 2;text-align:center;padding:60px;color:var(--dim);}
+.kc-empty .ico{font-size:38px;margin-bottom:12px;opacity:.3;}
+.kc-empty .txt{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+
+/* Individual card */
+.kc-card{background:var(--ink2);border:1px solid rgba(184,146,42,.1);border-radius:var(--r2);overflow:hidden;transition:border .25s,box-shadow .25s;}
+.kc-card:hover:not(.open){border-color:rgba(184,146,42,.25);box-shadow:0 6px 28px rgba(0,0,0,.3);}
+.kc-card.open{border-color:var(--gold);box-shadow:0 0 0 1px rgba(184,146,42,.15),0 8px 32px rgba(0,0,0,.35);}
+
+/* Card header — always visible */
+.kc-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;user-select:none;}
+.kc-icon-box{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.kc-icon-box.cat-constitution{background:rgba(184,146,42,.12);}
+.kc-icon-box.cat-rights{background:rgba(58,170,106,.1);}
+.kc-icon-box.cat-legal{background:rgba(58,122,204,.1);}
+.kc-icon-box.cat-procedure{background:rgba(154,106,232,.1);}
+.kc-head-info{flex:1;}
+.kc-head-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ivory);line-height:1.2;margin-bottom:5px;}
+.kc-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+.kc-tag.cat-constitution{background:rgba(184,146,42,.12);color:var(--gold);}
+.kc-tag.cat-rights{background:rgba(58,170,106,.1);color:#4ACC8A;}
+.kc-tag.cat-legal{background:rgba(58,122,204,.1);color:#5A9AE0;}
+.kc-tag.cat-procedure{background:rgba(154,106,232,.1);color:#AA7AE8;}
+.kc-chevron{font-size:12px;color:var(--dim);transition:transform .3s,color .3s;flex-shrink:0;padding:4px;}
+.kc-card.open .kc-chevron{transform:rotate(180deg);color:var(--gold);}
+
+/* Card body — shown when open */
+.kc-body{display:none;border-top:1px solid rgba(184,146,42,.1);}
+.kc-card.open .kc-body{display:block;animation:kcopen .22s ease;}
+@keyframes kcopen{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.kc-inner{padding:20px 22px 16px;}
+
+.kc-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:18px;font-style:italic;padding-left:14px;border-left:2px solid rgba(184,146,42,.25);}
+
+.kc-points{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.kc-point{display:flex;gap:10px;align-items:flex-start;}
+.kc-bullet{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px;}
+.kc-point-txt{font-size:13px;color:var(--text);line-height:1.65;}
+.kc-point-txt strong{color:var(--gold-l);}
+
+.kc-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.kc-pill{font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid rgba(184,146,42,.2);border-radius:20px;color:var(--gold-l);background:rgba(184,146,42,.05);}
+
+.kc-footer{border-top:1px solid rgba(184,146,42,.07);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;}
+.kc-read-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.5px;}
+.kc-prog-wrap{display:flex;align-items:center;gap:8px;}
+.kc-prog-track{width:90px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.kc-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-xl));border-radius:2px;transition:width 1s ease;}
+.kc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);}
+
+/* read badge */
+.kc-read-badge{display:none;font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(58,170,106,.1);border:1px solid rgba(58,170,106,.2);color:#4ACC8A;margin-left:6px;}
+.kc-card.read .kc-read-badge{display:inline;}
+
+@media(max-width:860px){.kc-grid{grid-template-columns:1fr;}.kc-top{grid-template-columns:1fr;}.kc-toolbar{flex-direction:column;align-items:stretch;}}
+
+
+/* ═══════════════════════════════════════
+   CONSTITUTIONAL FRAMEWORK EXPLORER
+═══════════════════════════════════════ */
+.cf-domain-btn{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 13px;border-radius:20px;border:1px solid rgba(184,146,42,.18);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.cf-domain-btn:hover{border-color:var(--gold);color:var(--gold-l);}
+.cf-domain-btn.cf-active{color:var(--ink);border-color:transparent;font-weight:600;}
+
+.cf-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.cf-left{}
+.cf-right{}
+.cf-section-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.cf-acts{display:flex;flex-direction:column;gap:7px;}
+.cf-act-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:rgba(184,146,42,.04);border:1px solid rgba(184,146,42,.1);border-radius:var(--r);transition:border .2s;}
+.cf-act-row:hover{border-color:rgba(184,146,42,.3);}
+.cf-act-ico{font-size:14px;flex-shrink:0;margin-top:1px;}
+.cf-act-name{font-size:12px;font-weight:500;color:var(--ivory);line-height:1.3;}
+.cf-act-sec{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+.cf-articles{display:flex;flex-direction:column;gap:7px;}
+.cf-art-row{padding:9px 12px;border-radius:var(--r);border:1px solid rgba(184,146,42,.1);background:rgba(184,146,42,.03);transition:all .2s;cursor:default;}
+.cf-art-row:hover{border-color:rgba(184,146,42,.3);background:rgba(184,146,42,.06);}
+.cf-art-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.5px;margin-bottom:3px;}
+.cf-art-title{font-size:12px;font-weight:500;color:var(--ivory);}
+.cf-art-rel{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+
+.cf-keywords{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px;}
+.cf-kw{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid rgba(184,146,42,.15);border-radius:20px;color:var(--gold-l);background:rgba(184,146,42,.05);}
+
+.cf-action-box{margin-top:14px;padding:12px 14px;border-radius:var(--r);border-left:2px solid var(--gold-d);background:rgba(184,146,42,.04);font-size:12px;color:var(--muted);line-height:1.65;}
+.cf-action-box strong{color:var(--gold-l);display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+
+@media(max-width:860px){.cf-layout{grid-template-columns:1fr;}}
+
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="lens-outer">
+    <div class="lr1"></div><div class="lr2"></div><div class="lr3"></div>
+    <div class="ldot"></div><div class="lscan"></div><div class="lorb"></div>
+  </div>
+  <div class="intro-title">Dharma Lens</div>
+  <div class="intro-sub">Legal Intelligence Platform</div>
+  <div class="intro-bar">
+    <div class="intro-track"><div class="intro-fill"></div></div>
+    <div class="intro-pct" id="ipct">Initializing system…</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="hdr">
+    <div class="hdr-i">
+      <div class="logo" onclick="nav('dash');act(0)">
+        <div class="logo-emblem"></div>
+        <div>
+          <div class="logo-name">Dharma Lens</div>
+          <span class="logo-tag">Legal Intelligence Platform</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nb on" onclick="nav('dash');act(0)">Dashboard</button>
+        <button class="nb" onclick="nav('upload');act(1)">Upload Case</button>
+        <button class="nb" onclick="nav('scenario');act(2)">Scenario</button>
+        <button class="nb" onclick="nav('history');act(3)">History</button>
+        <button class="nb" onclick="nav('insights');act(4)">Insights</button>
+        <button class="nb" onclick="nav('knowledge');act(5)">📚 Knowledge</button>
+      </nav>
+      <div class="hdr-r">
+        <div class="conn-wrap">
+          <div class="cdot" id="cdot"></div>
+          <span class="conn-txt" id="clbl">Connecting…</span>
+        </div>
+        <div class="pill-badge">⚖ Indian Law</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-dash">
+      <div class="hero">
+        <div class="hero-label">The Truth Lens</div>
+        <h1>Intelligent<br><em>Legal Analysis</em></h1>
+        <p class="hero-desc">Classify and understand legal cases grounded in the Indian Constitution and all major statutes — from IPC to IT Act, IDA to Companies Act.</p>
+        <div class="hero-btns">
+          <button class="btn btn-primary" onclick="nav('upload');act(1)">⬆ Upload Legal Document</button>
+          <button class="btn btn-ghost" onclick="nav('scenario');act(2)">📝 Analyse Scenario</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-ico">📁</div><div class="stat-val" id="sCases">0</div><div class="stat-lbl">Cases Analysed</div></div>
+        <div class="stat-card"><div class="stat-ico">⚖</div><div class="stat-val">8</div><div class="stat-lbl">Legal Categories</div></div>
+        <div class="stat-card"><div class="stat-ico">⚡</div><div class="stat-val" id="sConf">—</div><div class="stat-lbl">Avg Confidence</div></div>
+        <div class="stat-card"><div class="stat-ico">📜</div><div class="stat-val" id="sScen">0</div><div class="stat-lbl">Scenarios Processed</div></div>
+      </div>
+
+      <div class="section-head"><div class="eyebrow">Core Modules</div><h2>Features</h2></div>
+      <div class="module-grid">
+        <div class="module-card" onclick="nav('upload');act(1)">
+          <div class="mc-icon">📄</div>
+          <div class="mc-title">Legal Case Upload</div>
+          <div class="mc-desc">Upload PDF or TXT legal documents. Our validator ensures only genuine legal content is processed — court orders, FIRs, contracts, petitions and more.</div>
+          <div class="mc-link">→ Upload &amp; Analyse</div>
+        </div>
+        <div class="module-card" onclick="nav('scenario');act(2)">
+          <div class="mc-icon">⚖️</div>
+          <div class="mc-title">Scenario Analysis</div>
+          <div class="mc-desc">Describe your legal situation in plain language and receive instant classification with applicable Indian Acts, IPC sections, and constitutional articles.</div>
+          <div class="mc-link">→ Start Analysis</div>
+        </div>
+        <div class="module-card" onclick="nav('insights');act(4)">
+          <div class="mc-icon">📊</div>
+          <div class="mc-title">Case Insights</div>
+          <div class="mc-desc">Keyword feature scores, confidence meters, category breakdowns, applicable acts, constitutional provisions and recommended legal actions.</div>
+          <div class="mc-link">→ View Insights</div>
+        </div>
+        <div class="module-card" onclick="nav('history');act(3)">
+          <div class="mc-icon">🗂️</div>
+          <div class="mc-title">Case History</div>
+          <div class="mc-desc">Browse all previously analysed cases and scenarios from this session. Click any record to reload the full analysis into the Insights panel.</div>
+          <div class="mc-link">→ View History</div>
+        </div>
+        <div class="module-card" onclick="nav('knowledge');act(5)">
+          <div class="mc-icon">📚</div>
+          <div class="mc-title">Knowledge Center</div>
+          <div class="mc-desc">Explore Indian Constitution and legal concepts — preamble, fundamental rights, IPC basics, judiciary, how to file a case. Interactive expandable cards with real legal content.</div>
+          <div class="mc-link">→ Explore 8 Topics</div>
+        </div>
+        <!-- INTERACTIVE CONSTITUTIONAL FRAMEWORK CARD -->
+        <div id="cfCard" style="grid-column:span 2;background:var(--ink2);border:1px solid rgba(184,146,42,.12);border-radius:var(--r2);overflow:hidden;">
+
+          <!-- Header row -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 26px 16px;border-bottom:1px solid rgba(184,146,42,.08);">
+            <div style="display:flex;align-items:center;gap:13px;">
+              <div style="font-size:24px;">🏛️</div>
+              <div>
+                <div class="mc-title" style="margin-bottom:3px;">Indian Constitutional Framework</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;">SELECT A DOMAIN TO EXPLORE</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;" id="cfDomainBtns"></div>
+          </div>
+
+          <!-- Domain detail panel -->
+          <div id="cfPanel" style="padding:20px 26px 22px;">
+            <div id="cfEmpty" style="text-align:center;padding:28px 0;color:var(--dim);">
+              <div style="font-size:32px;margin-bottom:10px;opacity:.35;">⚖️</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;">Click a domain above to explore its laws &amp; articles</div>
+            </div>
+            <div id="cfContent" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="page" id="page-upload">
+      <div style="max-width:860px;margin:0 auto;">
+        <div class="breadcrumb"><a onclick="nav('dash');act(0)">Dashboard</a> / <span>Upload Legal Document</span></div>
+        <div class="section-head">
+          <div class="eyebrow">Document Processing</div>
+          <h2>Legal Case Upload</h2>
+          <p>Upload a PDF or TXT legal document — text is extracted and classified across 8 legal domains</p>
+        </div>
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fi').click()" ondragover="doDrag(event)" ondragleave="undoDrag()" ondrop="doDrop(event)">
+          <div class="dz-icon">📂</div>
+          <div class="dz-title">Drop your legal document here</div>
+          <div class="dz-sub">or click to choose a file</div>
+          <div class="dz-types">
+            <span class="dz-type">PDF</span>
+            <span class="dz-type">TXT</span>
+            <span class="dz-type">Max 30 MB</span>
+          </div>
+        </div>
+        <div class="valid-hint">
+          ✔ Valid: Court orders, FIRs, petitions, judgments, contracts, legal notices, agreements, case files, acts, constitutional text<br/>
+          ✖ Invalid: Images, nature photos, recipes, personal diaries, entertainment content, non-legal documents
+        </div>
+        <input type="file" id="fi" accept=".pdf,.txt" onchange="doFile(event)" style="display:none"/>
+        <div class="pipeline-box" id="pipeline" style="display:none">
+          <div class="eyebrow" style="margin-bottom:14px;">Processing Pipeline</div>
+          <div id="steps"></div>
+          <div id="uploadOut"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENARIO -->
+    <div class="page" id="page-scenario">
+      <div style="max-width:1200px;margin:0 auto;">
+        <div class="breadcrumb"><a onclick="nav('dash');act(0)">Dashboard</a> / <span>Scenario Analysis</span></div>
+        <div class="section-head">
+          <div class="eyebrow">Legal Analysis</div>
+          <h2>Scenario Explanation</h2>
+          <p>Describe a legal situation in detail — the more context you provide, the more accurate the classification</p>
+        </div>
+        <div class="two-col">
+          <div class="pane">
+            <div class="field-label" style="margin-bottom:9px;">Describe Your Legal Situation</div>
+            <textarea class="scenario-input" id="scInput" placeholder="Describe the legal situation in detail — parties involved, what happened, which laws may apply, what relief is sought…"></textarea>
+            <div style="margin-top:13px;display:flex;gap:9px;flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="doScenario()" id="scBtn">⚖ Analyse</button>
+              <button class="btn btn-ghost" onclick="clearSc()">✕ Clear</button>
+            </div>
+            <div class="rule"></div>
+            <div class="field-label">Quick Examples</div>
+            <div class="example-pills">
+              <div class="ex-pill" onclick="setEx('An employee with 10 years of service was terminated without prior notice, denied gratuity payment and provident fund settlement. The employer claimed misconduct but no domestic enquiry was conducted. The employee seeks reinstatement and dues under Industrial Disputes Act and Payment of Gratuity Act.')">Labour – Wrongful termination without enquiry</div>
+              <div class="ex-pill" onclick="setEx('A software developer discovered their proprietary source code was copied verbatim by a competitor company and published as an open-source project. The copyright registered under Copyright Act 1957 is being infringed. Seeking injunction and damages.')">IP – Software copyright infringement</div>
+              <div class="ex-pill" onclick="setEx('A married couple seeks divorce on grounds of cruelty and mental harassment under Section 13 of Hindu Marriage Act 1955. There is a dispute over child custody, maintenance under Section 125 CrPC, and division of matrimonial property including stridhan.')">Family – Divorce, custody and maintenance</div>
+              <div class="ex-pill" onclick="setEx('A state government officer unlawfully detained a citizen for 5 days without producing before a magistrate, violating Articles 21 and 22 of the Constitution. The citizen seeks habeas corpus writ under Article 226 before the High Court for fundamental rights violation.')">Constitutional – Unlawful detention, writ petition</div>
+              <div class="ex-pill" onclick="setEx('A person discovered their Aadhaar-linked bank account was hacked. The fraudster used OTP interception malware to steal Rs 3 lakh through multiple UPI transactions. FIR filed under Section 66C IT Act for identity theft and Section 66 for hacking. Seeking recovery and account freeze.')">Cyber – Banking fraud and identity theft</div>
+            </div>
+          </div>
+          <div class="pane" id="scOutput">
+            <div class="empty-state"><div class="ico">🔍</div><div class="txt">Enter a scenario to begin analysis</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="page" id="page-history">
+      <div style="max-width:980px;margin:0 auto;">
+        <div class="breadcrumb"><a onclick="nav('dash');act(0)">Dashboard</a> / <span>Case History</span></div>
+        <div class="section-head" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div><div class="eyebrow">Session Records</div><h2>Case History</h2><p>All cases and scenarios analysed this session</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="loadHist()">↻ Refresh</button>
+        </div>
+        <div id="histList"><div class="empty-state"><div class="ico">🗂️</div><div class="txt">No cases yet — upload a document or analyse a scenario</div></div></div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="page" id="page-insights">
+      <div style="max-width:1200px;margin:0 auto;">
+        <div class="breadcrumb"><a onclick="nav('dash');act(0)">Dashboard</a> / <span>Case Insights</span></div>
+        <div class="section-head"><div class="eyebrow">Analytics</div><h2>Case Insights</h2><p>Feature scores, confidence analysis, applicable laws and constitutional references</p></div>
+        <div id="insContent"><div class="empty-state" style="padding:80px;"><div class="ico">📊</div><div class="txt">Analyse a case or scenario to see insights here</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══════ KNOWLEDGE CENTER PAGE ═══════ -->
+    <div class="page" id="page-knowledge">
+      <div style="max-width:1200px;margin:0 auto;">
+        <div class="breadcrumb"><a onclick="nav('dash');act(0)">Dashboard</a> / <span>Knowledge Center</span></div>
+        <div class="section-head" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+          <div>
+            <div class="eyebrow">Legal Education</div>
+            <h2>Knowledge Center</h2>
+            <p>Explore Indian Constitution and legal concepts — click any card to expand</p>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="kc-top">
+          <div class="kc-stat-card">
+            <div class="kc-stat-icon">📖</div>
+            <div><div class="kc-stat-val">8</div><div class="kc-stat-lbl">Topics Available</div></div>
+          </div>
+          <div class="kc-stat-card">
+            <div class="kc-stat-icon">✅</div>
+            <div><div class="kc-stat-val" id="kcExplored">0</div><div class="kc-stat-lbl">Topics Explored</div></div>
+          </div>
+          <div class="kc-stat-card">
+            <div class="kc-stat-icon">🏛️</div>
+            <div><div class="kc-stat-val">448+</div><div class="kc-stat-lbl">Articles Covered</div></div>
+          </div>
+        </div>
+
+        <!-- Toolbar: search + filters -->
+        <div class="kc-toolbar">
+          <div class="kc-search-wrap">
+            <span class="kc-search-ico">🔍</span>
+            <input class="kc-search" id="kcSearchInput" type="text"
+              placeholder="Search — habeas corpus, section 302, divorce, writ, IPC, bail…"
+              oninput="kcDoFilter()"/>
+          </div>
+          <div class="kc-filters">
+            <button class="kc-filter active" data-cat="all"       onclick="kcSetCat('all',this)">All</button>
+            <button class="kc-filter"        data-cat="constitution" onclick="kcSetCat('constitution',this)">Constitution</button>
+            <button class="kc-filter"        data-cat="rights"    onclick="kcSetCat('rights',this)">Rights</button>
+            <button class="kc-filter"        data-cat="legal"     onclick="kcSetCat('legal',this)">Legal Concepts</button>
+            <button class="kc-filter"        data-cat="procedure" onclick="kcSetCat('procedure',this)">Procedure</button>
+          </div>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="kc-grid" id="kcGrid"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── API ENDPOINT ────────────────────────────────────────────────
+// Same-origin when served from Flask; explicit when opened as file
+const API = (location.protocol !== 'file:' && (location.port === '5050' || location.port === '5000' || location.port === ''))
+  ? '' : 'http://localhost:5050';
+
+let totalCases = 0, totalScen = 0;
+
+// ── INTRO ───────────────────────────────────────────────────────
+;(()=>{
+  let p = 0;
+  const el = document.getElementById('ipct');
+  const msgs = ['Initializing legal engine…','Loading Indian statutes…','Building case classifier…','Mapping constitutional articles…','Connecting to backend…','System ready.'];
+  const iv = setInterval(()=>{
+    p = Math.min(p + Math.random() * 8 + 3, 100);
+    el.textContent = msgs[Math.min(Math.floor(p/20), 5)] + ' ' + Math.floor(p) + '%';
+    if(p >= 100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        document.getElementById('intro').classList.add('hide');
+        setTimeout(()=>{
+          document.getElementById('intro').style.display = 'none';
+          document.getElementById('app').classList.add('on');
+          checkBackend();
+        }, 600);
+      }, 300);
+    }
+  }, 60);
+})();
+
+// ── BACKEND HEALTH ──────────────────────────────────────────────
+async function checkBackend(){
+  const dot = document.getElementById('cdot'), lbl = document.getElementById('clbl');
+  try{
+    const r = await fetch(API + '/api/health', {signal: AbortSignal.timeout(5000)});
+    const d = await r.json();
+    dot.className = 'cdot live';
+    lbl.textContent = 'Backend Live · v' + d.version;
+    toast('✅ Connected to backend · v' + d.version + ' · PDF: ' + d.pdf_backend);
+    refreshStats();
+  } catch {
+    dot.className = 'cdot dead';
+    lbl.textContent = 'Offline — run python3 app.py';
+    toast('⚠ Backend offline — start server: python3 app.py', 'error', 6000);
+  }
+}
+
+async function refreshStats(){
+  try{
+    const d = await (await fetch(API + '/api/stats')).json();
+    document.getElementById('sCases').textContent = d.total_cases;
+    document.getElementById('sConf').textContent = d.avg_confidence ? d.avg_confidence + '%' : '—';
+  } catch {}
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────
+function nav(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.getElementById('page-' + id).classList.add('on');
+  if(id === 'history') loadHist();
+}
+function act(i){ document.querySelectorAll('.nb').forEach((b,j) => b.classList.toggle('on', j===i)); }
+
+// ── TOAST ───────────────────────────────────────────────────────
+function toast(msg, type = '', dur = 3800){
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.animation = 'tin .3s reverse forwards'; setTimeout(()=>t.remove(), 300); }, dur);
+}
+
+// ── DRAG & DROP ─────────────────────────────────────────────────
+function doDrag(e){ e.preventDefault(); document.getElementById('dropZone').classList.add('drag'); }
+function undoDrag(){ document.getElementById('dropZone').classList.remove('drag'); }
+function doDrop(e){ e.preventDefault(); undoDrag(); const f = e.dataTransfer.files[0]; if(f) processFile(f); }
+function doFile(e){ const f = e.target.files[0]; if(f) processFile(f); document.getElementById('fi').value=''; }
+
+// ── PIPELINE ────────────────────────────────────────────────────
+const STEPS = [
+  {id:'s1', name:'Document Upload',        detail:'Sending file to backend server…'},
+  {id:'s2', name:'Text Extraction',        detail:'Extracting text via pdfplumber…'},
+  {id:'s3', name:'Legal Content Validation',detail:'Verifying document is legal content…'},
+  {id:'s4', name:'Case Classification',    detail:'Scoring across 8 legal domains…'},
+  {id:'s5', name:'Insights Generation',    detail:'Mapping to Indian acts & articles…'},
+];
+
+function renderSteps(states){
+  return STEPS.map((s,i)=>{
+    const st = states[i] || 'wait';
+    const ico = st==='done' ? '✓' : st==='run' ? '⟳' : (i+1);
+    const lbl = st==='done' ? 'Complete' : st==='run' ? 'Processing' : 'Pending';
+    return `<div class="step-row" id="${s.id}">
+      <div class="step-orb ${st}" id="${s.id}o">${ico}</div>
+      <div class="step-text"><div class="step-name">${s.name}</div><div class="step-detail" id="${s.id}d">${s.detail}</div></div>
+      <div class="step-badge ${st}" id="${s.id}p">${lbl}</div>
+    </div>`;
+  }).join('');
+}
+
+function setStep(i, st, det){
+  const s = STEPS[i];
+  const o = document.getElementById(s.id+'o'), p = document.getElementById(s.id+'p'), d = document.getElementById(s.id+'d');
+  if(!o) return;
+  o.className = 'step-orb ' + st;
+  o.textContent = st==='done' ? '✓' : st==='run' ? '⟳' : (i+1);
+  p.className = 'step-badge ' + st;
+  p.textContent = st==='done' ? 'Complete' : st==='run' ? 'Processing' : 'Pending';
+  if(det) d.textContent = det;
+}
+
+// ── FILE UPLOAD ─────────────────────────────────────────────────
+async function processFile(file){
+  // Basic client-side type check
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['pdf','txt'].includes(ext)){
+    toast('❌ Only PDF and TXT files accepted. Images and other file types are invalid.', 'error', 5000);
+    return;
+  }
+
+  const panel = document.getElementById('pipeline');
+  const stepsEl = document.getElementById('steps');
+  const outEl = document.getElementById('uploadOut');
+  panel.style.display = 'block';
+  outEl.innerHTML = '';
+  stepsEl.innerHTML = renderSteps(['run','wait','wait','wait','wait']);
+  toast('📄 Processing: ' + file.name);
+
+  await delay(350);
+  setStep(0, 'done', `"${file.name}" received — ${(file.size/1024).toFixed(1)} KB`);
+  setStep(1, 'run');
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  let data;
+  try{
+    const r = await fetch(API + '/api/upload', {method:'POST', body:fd});
+    data = await r.json();
+    if(!r.ok){
+      // Legal validation failure
+      if(data.validation_failed){
+        setStep(1, 'done', 'Text extracted successfully');
+        setStep(2, 'done');
+        await delay(300);
+        outEl.innerHTML = errCard(data.error, data.hint);
+        toast('⛔ ' + data.error.slice(0, 80), 'error', 6000);
+      } else {
+        outEl.innerHTML = errCard(data.error);
+        toast('❌ ' + data.error, 'error');
+      }
+      return;
+    }
+  } catch(err){
+    outEl.innerHTML = errCard('Could not reach backend. Make sure the server is running (python3 app.py).');
+    toast('❌ Backend connection failed', 'error');
+    return;
+  }
+
+  await delay(400);
+  setStep(1, 'done', `Extracted ${data.char_count.toLocaleString()} chars, ${data.word_count.toLocaleString()} words`);
+  setStep(2, 'run'); await delay(500);
+  setStep(2, 'done', 'Legal content confirmed ✓');
+  setStep(3, 'run'); await delay(500);
+  setStep(3, 'done', `Classified: ${data.category} (${data.confidence}% confidence)`);
+  setStep(4, 'run'); await delay(400);
+  setStep(4, 'done', 'Insights ready — navigate to Insights tab');
+
+  outEl.innerHTML = uploadCard(data);
+  storeIns(data);
+  totalCases++;
+  document.getElementById('sCases').textContent = totalCases;
+  toast('✅ ' + data.category + ' (' + data.confidence + '%)');
+}
+
+function uploadCard(d){
+  const kws = d.tfidf_keywords.slice(0,10).map((k,i)=>`<span class="kw-tag ${i<3?'hi':''}" title="${k.score}">${k.word}</span>`).join('');
+  return `<div class="result-card">
+    <div class="result-meta">
+      <div class="cat-tag ${c2c(d.category)}">⚖ ${d.category}</div>
+      <div class="conf-badge">${d.confidence}%</div>
+      <div class="sev-badge">${d.severity}</div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;line-height:1.75;margin-bottom:13px;">${esc(d.summary||'')}</p>
+    <div class="field-label">Top Keywords</div>
+    <div class="kw-cloud">${kws}</div>
+    <div style="margin-top:14px;display:flex;gap:9px;">
+      <button class="btn btn-ghost btn-sm" onclick="nav('insights');act(4)">📊 Full Insights</button>
+      <button class="btn btn-ghost btn-sm" onclick="nav('history');act(3)">🗂 History</button>
+    </div>
+  </div>`;
+}
+
+// ── SCENARIO ────────────────────────────────────────────────────
+async function doScenario(){
+  const txt = document.getElementById('scInput').value.trim();
+  if(!txt){ toast('⚠ Please describe a legal scenario first.'); return; }
+  if(txt.length < 20){ toast('⚠ Please provide more detail for accurate classification.', 'error'); return; }
+
+  const btn = document.getElementById('scBtn');
+  btn.innerHTML = 'Analysing<div class="spin-dots"><span></span><span></span><span></span></div>';
+  btn.disabled = true;
+
+  document.getElementById('scOutput').innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);">
+    <div style="font-size:32px;margin-bottom:12px;">⚖️</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;">Classifying scenario<div class="spin-dots"><span></span><span></span><span></span></div></div>
+  </div>`;
+
+  try{
+    const r = await fetch(API + '/api/scenario', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({scenario: txt})
+    });
+    const d = await r.json();
+    if(!r.ok){
+      document.getElementById('scOutput').innerHTML = errCard(d.error, d.hint);
+      toast('⛔ ' + (d.error||'Analysis failed').slice(0,80), 'error', 5000);
+    } else {
+      renderScResult(d);
+      storeIns(d);
+      totalScen++;
+      totalCases++;
+      document.getElementById('sScen').textContent = totalScen;
+      document.getElementById('sCases').textContent = totalCases;
+      toast('✅ ' + d.category + ' (' + d.confidence + '%)');
+    }
+  } catch(err){
+    document.getElementById('scOutput').innerHTML = errCard('Could not reach backend. Make sure the server is running.');
+    toast('❌ Backend connection failed', 'error');
+  }
+
+  btn.innerHTML = '⚖ Analyse';
+  btn.disabled = false;
+}
+
+function renderScResult(d){
+  const laws = (d.applicable_acts||[]).map(a=>`<div class="law-card"><strong>${esc(a.act)}</strong>${esc(a.sections||a.description||'')}</div>`).join('');
+  const arts  = (d.constitutional_articles||[]).map(a=>`<div class="law-card"><strong>Article ${esc(a.article)} – ${esc(a.title)}</strong>${esc(a.relevance)}</div>`).join('');
+  const kws   = (d.tfidf_keywords||[]).map((k,i)=>`<span class="kw-tag ${i<3?'hi':''}" title="Score: ${k.score}">${k.word}</span>`).join('');
+  document.getElementById('scOutput').innerHTML = `<div class="result-card">
+    <div class="result-meta">
+      <div class="cat-tag ${c2c(d.category)}">⚖ ${d.category}</div>
+      <div class="conf-badge">${d.confidence}%</div>
+      <div class="sev-badge">${d.severity}</div>
+    </div>
+    <div class="field-group"><div class="field-label">Legal Explanation</div><div class="output-field">${esc(d.explanation||'')}</div></div>
+    ${laws ? `<div class="field-group"><div class="field-label">Applicable Indian Laws</div>${laws}</div>` : ''}
+    ${arts ? `<div class="field-group"><div class="field-label">Constitutional Articles</div>${arts}</div>` : ''}
+    <div class="field-group"><div class="field-label">Key Legal Terms Detected</div><div class="kw-cloud">${kws}</div></div>
+    <div class="field-group"><div class="field-label">Recommended Action</div><div class="output-field" style="border-left:2px solid var(--gold-d);background:rgba(184,146,42,.03);">${esc(d.recommended_action||'')}</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="nav('insights');act(4)">📊 Full Insights</button>
+  </div>`;
+}
+
+function setEx(t){ document.getElementById('scInput').value = t; }
+function clearSc(){
+  document.getElementById('scInput').value = '';
+  document.getElementById('scOutput').innerHTML = `<div class="empty-state"><div class="ico">🔍</div><div class="txt">Enter a scenario to begin analysis</div></div>`;
+}
+
+// ── HISTORY ─────────────────────────────────────────────────────
+async function loadHist(){
+  try{
+    const d = await (await fetch(API + '/api/cases')).json();
+    if(!d.cases || !d.cases.length){
+      document.getElementById('histList').innerHTML = `<div class="empty-state"><div class="ico">🗂️</div><div class="txt">No cases yet</div></div>`;
+      return;
+    }
+    document.getElementById('histList').innerHTML = `<div class="history-list">` + d.cases.map(c=>`
+      <div class="hist-item" onclick="loadCase('${c.case_id}')">
+        <div class="hist-dot" style="background:${catColor(c.category)}"></div>
+        <div class="hist-body">
+          <div class="hist-title">${esc(c.label)}</div>
+          <div class="hist-meta">${c.source==='scenario'?'Scenario':'Document'} · ${c.analysed_at}</div>
+        </div>
+        <div class="hist-right">
+          <div class="hist-cat">${c.category.split('/')[0].toUpperCase().slice(0,10)}</div>
+          <div class="hist-conf">⚡ ${c.confidence}%</div>
+        </div>
+        <button class="del-btn" onclick="delCase(event,'${c.case_id}')">🗑</button>
+      </div>`).join('') + `</div>`;
+  } catch {
+    document.getElementById('histList').innerHTML = `<div class="empty-state"><div class="ico">⚠️</div><div class="txt">Backend offline – start server to view history</div></div>`;
+  }
+}
+
+async function loadCase(cid){
+  try{
+    const d = await (await fetch(API + '/api/case/' + cid)).json();
+    storeIns(d); nav('insights'); act(4);
+    toast('📊 Loaded: ' + d.category);
+  } catch { toast('❌ Could not load case', 'error'); }
+}
+
+async function delCase(e, cid){
+  e.stopPropagation();
+  try{
+    await fetch(API + '/api/case/' + cid, {method:'DELETE'});
+    loadHist(); refreshStats();
+    toast('🗑 Case deleted');
+  } catch { toast('❌ Could not delete', 'error'); }
+}
+
+// ── INSIGHTS ────────────────────────────────────────────────────
+function storeIns(d){ renderIns(d); }
+
+function renderIns(d){
+  if(!d) return;
+  const label = d.filename || (d.input_scenario ? d.input_scenario.slice(0, 65) + '…' : 'Analysis');
+  const tfidf = d.tfidf_keywords || [];
+  const allS  = d.all_category_scores || {};
+  const acts  = d.applicable_acts || [];
+  const arts  = d.constitutional_articles || [];
+  const maxS  = tfidf.length ? parseFloat(tfidf[0].score) || 1 : 1;
+
+  const tBars = tfidf.slice(0,12).map(k=>{
+    const pct = Math.round((parseFloat(k.score)/maxS)*100);
+    return `<div class="score-row"><div class="score-label">${esc(k.word)}</div><div class="score-track"><div class="score-fill" style="width:${pct}%"><span class="score-val">${parseFloat(k.score).toFixed(3)}</span></div></div></div>`;
+  }).join('');
+
+  const aBars = Object.entries(allS).filter(([,v])=>v>0).map(([cat,sc])=>`
+    <div class="score-row"><div class="score-label" style="width:160px">${esc(cat.split('/')[0])}</div><div class="score-track"><div class="score-fill" style="width:${Math.min(100,sc*1.8)}%"><span class="score-val">${sc}%</span></div></div></div>`).join('');
+
+  document.getElementById('insContent').innerHTML = `<div class="ins-grid">
+    <div class="ins-main">
+      <div class="cat-tag ${c2c(d.category)}" style="margin-bottom:14px;">⚖ ${d.category}</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:9px;color:var(--ivory);">${esc(label)}</h3>
+      <p style="color:var(--muted);line-height:1.75;font-size:14px;margin-bottom:18px;">${esc(d.summary||d.explanation||'')}</p>
+      <div class="field-label">Confidence Level</div>
+      <div style="display:flex;align-items:center;gap:12px;margin:8px 0 20px;">
+        <div class="conf-bar-wrap" style="flex:1;"><div class="conf-bar-fill" style="width:${d.confidence}%"></div></div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold)">${d.confidence}%</span>
+        <span class="sev-badge">${d.severity}</span>
+      </div>
+      ${tBars ? `<div class="field-label">Keyword Feature Scores</div><div class="score-bars">${tBars}</div><div class="rule"></div>` : ''}
+      ${aBars ? `<div class="field-label">All Category Scores</div><div class="score-bars">${aBars}</div>` : ''}
+    </div>
+    <div class="ins-side">
+      <div class="ins-card">
+        <div class="field-label">Applicable Indian Acts</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+          ${acts.map(a=>`<div class="law-card"><strong>${esc(a.act)}</strong>${esc(a.sections||a.description||'')}</div>`).join('') || '<p style="color:var(--dim);font-size:13px;margin-top:6px;">—</p>'}
+        </div>
+      </div>
+      <div class="ins-card">
+        <div class="field-label">Constitutional Articles</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+          ${arts.map(a=>`<div class="law-card"><strong>Art. ${esc(a.article)} — ${esc(a.title)}</strong>${esc(a.relevance)}</div>`).join('') || '<p style="color:var(--dim);font-size:13px;margin-top:6px;">—</p>'}
+        </div>
+      </div>
+      <div class="ins-card">
+        <div class="field-label">Recommended Legal Action</div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.75;margin-top:8px;">${esc(d.recommended_action||'—')}</p>
+      </div>
+      ${d.extracted_text_preview ? `<div class="ins-card"><div class="field-label">Extracted Text Preview</div><p style="color:var(--dim);font-size:11px;line-height:1.6;margin-top:8px;font-family:'JetBrains Mono',monospace;">${esc(d.extracted_text_preview.slice(0,300))}…</p></div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── HELPERS ─────────────────────────────────────────────────────
+function c2c(c){
+  return {'Criminal Law':'criminal','Civil Law':'civil','Cyber Law':'cyber',
+    'Corporate/Business Law':'corporate','Family Law':'family',
+    'Constitutional Law':'constitutional','Labour/Employment Law':'labor',
+    'Intellectual Property Law':'ip'}[c] || 'civil';
+}
+function catColor(c){
+  return {'Criminal Law':'#E05C7A','Civil Law':'#3DB8D8','Cyber Law':'#AA7AE8',
+    'Corporate/Business Law':'#D4AA4A','Family Law':'#4ACC8A',
+    'Constitutional Law':'#E0A04A','Labour/Employment Law':'#CCCC4A',
+    'Intellectual Property Law':'#4ACCCC'}[c] || '#9A927E';
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function errCard(msg, hint){
+  return `<div class="err-card">
+    <div class="err-title">⛔ Invalid Document</div>
+    <div class="err-msg">${esc(msg)}</div>
+    ${hint ? `<div class="err-hint">${esc(hint)}</div>` : ''}
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════════════════
+//  KNOWLEDGE CENTER
+// ══════════════════════════════════════════════════════
+
+const KC_DATA = [
+  {
+    id: 'preamble',
+    cat: 'constitution',
+    icon: '⚖️',
+    title: 'Preamble of India',
+    tag: 'Constitution',
+    readTime: '4 min read',
+    progress: 100,
+    desc: 'The Preamble is the soul of the Indian Constitution — an introductory statement setting out the guiding philosophy, objectives and ideals the Constitution seeks to achieve. It begins with the words "We, the People of India" signifying that sovereign power vests in the people.',
+    points: [
+      '<strong>Adopted:</strong> 26 November 1949 (Constitution Day); came into force 26 January 1950',
+      '<strong>Declares India:</strong> Sovereign, Socialist, Secular, Democratic Republic — "Socialist" and "Secular" added by 42nd Amendment (1976)',
+      '<strong>Justice:</strong> Social, Economic and Political justice for all citizens',
+      '<strong>Liberty:</strong> Of thought, expression, belief, faith and worship',
+      '<strong>Equality:</strong> Of status and opportunity for every citizen',
+      '<strong>Fraternity:</strong> Assuring dignity of the individual and unity and integrity of the Nation',
+      '<strong>Kesavananda Bharati (1973):</strong> Supreme Court held Preamble is part of the Constitution and reflects its basic structure',
+      '<strong>Note:</strong> Preamble cannot be used to override express constitutional provisions'
+    ],
+    pills: ['Art. 1','42nd Amendment','44th Amendment','Basic Structure','We the People'],
+  },
+  {
+    id: 'fundamentalrights',
+    cat: 'rights',
+    icon: '🛡️',
+    title: 'Fundamental Rights (Part III)',
+    tag: 'Rights',
+    readTime: '7 min read',
+    progress: 90,
+    desc: 'Articles 12–35 guarantee six Fundamental Rights to all citizens. These are justiciable rights — enforceable in courts. The Supreme Court under Article 32 and High Courts under Article 226 can issue writs to enforce them. Dr. B. R. Ambedkar called Article 32 the "heart and soul" of the Constitution.',
+    points: [
+      '<strong>Right to Equality (Art. 14–18):</strong> Equality before law, prohibition of discrimination on grounds of religion, race, caste, sex or place of birth',
+      '<strong>Right to Freedom (Art. 19–22):</strong> Freedom of speech, assembly, movement, profession; protection against arbitrary arrest (Art. 22)',
+      '<strong>Right against Exploitation (Art. 23–24):</strong> Prohibition of forced labour, human trafficking, and child labour in factories',
+      '<strong>Right to Freedom of Religion (Art. 25–28):</strong> Freedom of conscience, freely profess, practise and propagate religion',
+      '<strong>Cultural & Educational Rights (Art. 29–30):</strong> Protection of minorities\' language, script and culture; right to establish educational institutions',
+      '<strong>Right to Constitutional Remedies (Art. 32):</strong> Right to move Supreme Court for enforcement of Fundamental Rights — 5 writs available',
+      '<strong>Suspension during Emergency:</strong> All Fundamental Rights except Articles 20 & 21 can be suspended during National Emergency (Art. 352)',
+      '<strong>Maneka Gandhi (1978):</strong> SC expanded Art. 21 to include right to live with dignity, privacy, livelihood'
+    ],
+    pills: ['Art. 14','Art. 19','Art. 21','Art. 22','Art. 32','Art. 226','Writ Petition'],
+  },
+  {
+    id: 'directive',
+    cat: 'constitution',
+    icon: '🏛️',
+    title: 'Directive Principles (Part IV)',
+    tag: 'Constitution',
+    readTime: '5 min read',
+    progress: 75,
+    desc: 'Articles 36–51 contain Directive Principles of State Policy (DPSPs) — non-justiciable guidelines for the State to achieve a social and economic democracy. They represent India\'s commitment to a welfare state and guide legislation and policy-making.',
+    points: [
+      '<strong>Non-justiciable:</strong> Cannot be enforced by courts, but are fundamental in governance and guide the State in making laws',
+      '<strong>Art. 39:</strong> Equal pay for equal work; distribution of ownership and control of resources to prevent concentration of wealth',
+      '<strong>Art. 40:</strong> Organisation of Village Panchayats and conferment of necessary powers',
+      '<strong>Art. 43:</strong> Securing a living wage and decent conditions of work for labourers',
+      '<strong>Art. 44:</strong> Uniform Civil Code throughout the territory of India (yet to be implemented)',
+      '<strong>Art. 45:</strong> Free and compulsory education for children — now a Fundamental Right via Art. 21A (86th Amendment)',
+      '<strong>Art. 47:</strong> Raise level of nutrition and standard of living; prohibition of intoxicating drinks',
+      '<strong>Art. 51A (Part IVA):</strong> Eleven Fundamental Duties added by 42nd Amendment 1976 and 86th Amendment 2002'
+    ],
+    pills: ['Art. 36','Art. 39','Art. 43','Art. 44','Art. 45','Art. 51A','42nd Amendment'],
+  },
+  {
+    id: 'amendments',
+    cat: 'constitution',
+    icon: '📋',
+    title: 'Key Constitutional Amendments',
+    tag: 'Constitution',
+    readTime: '6 min read',
+    progress: 60,
+    desc: 'The Constitution has been amended 106 times as of 2023. Amendments require a special majority in Parliament (2/3 of members present and voting + majority of total membership). The Supreme Court in Kesavananda Bharati (1973) established that Parliament cannot amend the Basic Structure of the Constitution.',
+    points: [
+      '<strong>1st Amendment (1951):</strong> Added Ninth Schedule to protect land reform laws from judicial review; added reasonable restrictions on freedom of speech',
+      '<strong>42nd Amendment (1976):</strong> "Mini-Constitution" — added Socialist, Secular to Preamble; added Fundamental Duties; curtailed judicial review',
+      '<strong>44th Amendment (1978):</strong> Restored right to property as legal right under Art. 300A; removed from Fundamental Rights',
+      '<strong>73rd & 74th Amendment (1992):</strong> Constitutional status to Panchayati Raj and Urban Local Bodies; reservation for women in local bodies',
+      '<strong>86th Amendment (2002):</strong> Added Art. 21A — free and compulsory education for children aged 6–14 as Fundamental Right',
+      '<strong>101st Amendment (2016):</strong> Introduced Goods and Services Tax (GST); concurrent power of Centre and States to levy GST',
+      '<strong>103rd Amendment (2019):</strong> 10% reservation for Economically Weaker Sections (EWS) in education and government jobs',
+      '<strong>Basic Structure Doctrine:</strong> Kesavananda Bharati (1973) — supremacy of Constitution, judicial review, separation of powers, federalism cannot be destroyed'
+    ],
+    pills: ['Art. 368','1st Amdt','42nd Amdt','73rd Amdt','86th Amdt','101st Amdt','Basic Structure'],
+  },
+  {
+    id: 'judiciary',
+    cat: 'legal',
+    icon: '🔨',
+    title: 'Indian Judiciary System',
+    tag: 'Legal Concepts',
+    readTime: '6 min read',
+    progress: 80,
+    desc: 'India has an integrated, independent judiciary with the Supreme Court at the apex. The hierarchy flows from the Supreme Court down to subordinate courts at the district and tehsil level. Judges are appointed through the Collegium system and can only be removed through an impeachment process.',
+    points: [
+      '<strong>Supreme Court (Art. 124):</strong> Apex court in New Delhi; 34 judges including Chief Justice; original, appellate and advisory jurisdiction',
+      '<strong>High Courts (Art. 214):</strong> One per state/UT; appellate jurisdiction over district courts; writ jurisdiction under Art. 226 for FR enforcement',
+      '<strong>District Courts:</strong> Principal civil and criminal courts at district level; Sessions Court for criminal matters; District Judge presides',
+      '<strong>Tribunals:</strong> NCLT, NCLAT, NGT, Consumer Commissions, CAT, SAT — specialized forums for specific subject matters',
+      '<strong>Lok Adalats:</strong> Under Legal Services Authority Act — alternative dispute resolution; awards are final and binding, no court fees',
+      '<strong>Collegium System:</strong> SC judges appointed by President on recommendation of Chief Justice + 4 senior-most SC judges',
+      '<strong>Art. 129 & 215:</strong> Supreme Court and High Courts are courts of record with power to punish for contempt',
+      '<strong>Judicial Review:</strong> Courts can strike down laws that violate the Constitution — cornerstone of constitutional democracy'
+    ],
+    pills: ['Art. 124','Art. 214','Art. 226','Art. 32','Art. 129','Art. 227','Collegium'],
+  },
+  {
+    id: 'filecase',
+    cat: 'procedure',
+    icon: '📝',
+    title: 'How to File a Case',
+    tag: 'Procedure',
+    readTime: '8 min read',
+    progress: 55,
+    desc: 'Filing a legal case requires identifying the correct forum, cause of action, limitation period, and procedure. The process varies significantly for criminal, civil, constitutional, consumer, and labour matters. Knowing the right court to approach is half the battle.',
+    points: [
+      '<strong>Criminal (FIR):</strong> File FIR at police station for cognizable offences; police must register; for non-cognizable offences file complaint before Magistrate',
+      '<strong>Criminal (Private Complaint):</strong> Under Sec. 200 CrPC (now BNSS 2023) file complaint directly before Magistrate if police refuses to register FIR',
+      '<strong>Civil Suit:</strong> Draft Plaint under Order VII CPC; pay court fees based on suit valuation; file in court of competent pecuniary and territorial jurisdiction',
+      '<strong>Constitutional Writ:</strong> File Writ Petition under Art. 32 (SC) or Art. 226 (HC); no court fees; no limitation period for FR violations; 5 types of writs',
+      '<strong>Consumer Forum:</strong> File complaint under Consumer Protection Act 2019 — District Commission (up to ₹50L), State (₹50L–₹2Cr), National (above ₹2Cr)',
+      '<strong>Labour Disputes:</strong> File complaint before Labour Commissioner; if not resolved, approach Labour Court or Industrial Tribunal under IDA 1947',
+      '<strong>Limitation Periods:</strong> Civil suits — 3 years (general); criminal complaints — varies; consumer — 2 years from cause of action',
+      '<strong>Free Legal Aid:</strong> Art. 39A + Legal Services Authority Act 1987 — free legal services for SC/ST, women, children, disabled, persons with annual income below threshold'
+    ],
+    pills: ['Sec. 154 CrPC','Sec. 200 CrPC','Order VII CPC','Art. 32','Art. 226','BNSS 2023','Limitation Act'],
+  },
+  {
+    id: 'ipc',
+    cat: 'legal',
+    icon: '⚖️',
+    title: 'Indian Penal Code (IPC) Basics',
+    tag: 'Legal Concepts',
+    readTime: '5 min read',
+    progress: 85,
+    desc: 'The IPC 1860 is India\'s main criminal code defining offences and prescribing punishments. It has 511 sections across 23 chapters. From 1 July 2024, the Bharatiya Nyaya Sanhita (BNS) 2023 replaced the IPC while largely retaining its provisions with updated terminology and new additions.',
+    points: [
+      '<strong>IPC Sec. 302 / BNS Sec. 101:</strong> Murder — punishment of death or life imprisonment + fine',
+      '<strong>IPC Sec. 376 / BNS Sec. 63:</strong> Rape — minimum 10 years rigorous imprisonment, extendable to life',
+      '<strong>IPC Sec. 378-379:</strong> Theft — imprisonment up to 3 years or fine or both',
+      '<strong>IPC Sec. 420 / BNS Sec. 318:</strong> Cheating — imprisonment up to 7 years + fine',
+      '<strong>IPC Sec. 120B:</strong> Criminal Conspiracy — punishment same as the principal offence',
+      '<strong>IPC Sec. 304B:</strong> Dowry Death — minimum 7 years imprisonment, up to life',
+      '<strong>BNS 2023 (new):</strong> Introduces community service as punishment for petty offences; organised crime provisions; terrorism defined',
+      '<strong>Mens Rea & Actus Reus:</strong> Two essential elements of crime — guilty mind + guilty act; both must concur for criminal liability'
+    ],
+    pills: ['IPC Sec. 302','IPC Sec. 376','IPC Sec. 420','IPC Sec. 120B','BNS 2023','BNSS 2023','Mens Rea'],
+  },
+  {
+    id: 'citizenrights',
+    cat: 'rights',
+    icon: '👤',
+    title: 'Rights Every Citizen Should Know',
+    tag: 'Rights',
+    readTime: '6 min read',
+    progress: 70,
+    desc: 'Beyond the six Fundamental Rights in Part III, Indian citizens have several important legal rights under various statutes and judicial interpretations. Knowing these rights is essential for every citizen to protect themselves and participate meaningfully in democracy.',
+    points: [
+      '<strong>Right to Information (RTI):</strong> RTI Act 2005 — seek information from any public authority; file application with ₹10 fee; reply within 30 days',
+      '<strong>Right against Self-Incrimination:</strong> Art. 20(3) — no person accused of an offence shall be compelled to be a witness against themselves',
+      '<strong>Right to Free Legal Aid:</strong> Art. 39A — State shall ensure equal justice; free legal aid for eligible persons through NALSA',
+      '<strong>Right to Vote:</strong> Art. 326 — universal adult suffrage; every citizen above 18 can vote regardless of religion, caste, sex, education',
+      '<strong>Right to Privacy:</strong> Art. 21 — upheld as fundamental right in K.S. Puttaswamy v. Union of India (2017) 9-judge bench; includes data privacy',
+      '<strong>Right against Unlawful Arrest:</strong> Art. 22 — must be informed of grounds; produced before nearest Magistrate within 24 hours; right to consult lawyer',
+      '<strong>Consumer Rights:</strong> Right to safety, information, choice, redressal and consumer education under Consumer Protection Act 2019',
+      '<strong>Right to Education:</strong> Art. 21A — free and compulsory education for all children aged 6–14; private schools must reserve 25% seats for EWS'
+    ],
+    pills: ['Art. 20(3)','Art. 21','Art. 22','Art. 39A','Art. 326','RTI Act 2005','RTE Act 2009'],
+  }
+];
+
+let kcActiveCat = 'all';
+let kcExploredIds = new Set();
+
+function kcInit(){
+  if(document.getElementById('kcGrid').innerHTML !== '') return;
+  kcRender(KC_DATA);
+}
+
+function kcRender(topics){
+  const grid = document.getElementById('kcGrid');
+  if(!topics.length){
+    grid.innerHTML = '<div class="kc-empty"><div class="ico">🔍</div><div class="txt">No topics match your search</div></div>';
+    return;
+  }
+  grid.innerHTML = topics.map(t => {
+    const isRead  = kcExploredIds.has(t.id);
+    const isOpen  = false;
+    const points  = t.points.map(p =>
+      `<div class="kc-point"><div class="kc-bullet"></div><div class="kc-point-txt">${p}</div></div>`
+    ).join('');
+    const pills   = t.pills.map(p => `<span class="kc-pill">${p}</span>`).join('');
+    return `
+    <div class="kc-card${isRead?' read':''}" id="kcc-${t.id}">
+      <div class="kc-head" onclick="kcToggle('${t.id}')">
+        <div class="kc-icon-box cat-${t.cat}">${t.icon}</div>
+        <div class="kc-head-info">
+          <div class="kc-head-title">${t.title}<span class="kc-read-badge">✓ Read</span></div>
+          <span class="kc-tag cat-${t.cat}">${t.tag}</span>
+        </div>
+        <div class="kc-chevron">▾</div>
+      </div>
+      <div class="kc-body" id="kcb-${t.id}">
+        <div class="kc-inner">
+          <p class="kc-desc">${t.desc}</p>
+          <div class="kc-points">${points}</div>
+          <div class="kc-pills">${pills}</div>
+        </div>
+        <div class="kc-footer">
+          <div class="kc-read-time">⏱ ${t.readTime}</div>
+          <div class="kc-prog-wrap">
+            <div class="kc-prog-track"><div class="kc-prog-fill" style="width:${t.progress}%"></div></div>
+            <span class="kc-prog-txt">${t.progress}% covered</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function kcToggle(id){
+  const card = document.getElementById('kcc-' + id);
+  const wasOpen = card.classList.contains('open');
+
+  // Close all open cards
+  document.querySelectorAll('.kc-card.open').forEach(c => c.classList.remove('open'));
+
+  if(!wasOpen){
+    card.classList.add('open');
+    // Mark as read
+    if(!kcExploredIds.has(id)){
+      kcExploredIds.add(id);
+      card.classList.add('read');
+      const el = document.getElementById('kcExplored');
+      if(el) el.textContent = kcExploredIds.size;
+    }
+    // Scroll card into view smoothly
+    setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+  }
+}
+
+function kcSetCat(cat, btn){
+  kcActiveCat = cat;
+  document.querySelectorAll('.kc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  kcDoFilter();
+}
+
+function kcDoFilter(){
+  const q   = (document.getElementById('kcSearchInput')?.value || '').toLowerCase().trim();
+  const cat = kcActiveCat;
+
+  const filtered = KC_DATA.filter(t => {
+    const matchCat = cat === 'all' || t.cat === cat;
+    if(!q) return matchCat;
+    const hay = [t.title, t.desc, t.tag, ...t.points, ...t.pills].join(' ').toLowerCase();
+    return matchCat && hay.includes(q);
+  });
+
+  kcRender(filtered);
+
+  // Re-apply open/read states
+  kcExploredIds.forEach(id => {
+    const c = document.getElementById('kcc-' + id);
+    if(c) c.classList.add('read');
+  });
+}
+
+// Hook into existing nav function
+const _prevNav = typeof nav === 'function' ? nav : null;
+function nav(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.getElementById('page-' + id)?.classList.add('on');
+  if(id === 'history') loadHist();
+  if(id === 'knowledge') kcInit();
+}
+
+
+
+// ══════════════════════════════════════════════════════
+//  CONSTITUTIONAL FRAMEWORK EXPLORER
+// ══════════════════════════════════════════════════════
+
+const CF_DOMAINS = [
+  {
+    id:'criminal', label:'Criminal Law', color:'#E05C7A', icon:'🔒',
+    acts:[
+      {ico:'📜', name:'Indian Penal Code (IPC), 1860', sec:'Sec. 302 (Murder) · Sec. 376 (Rape) · Sec. 378 (Theft) · Sec. 420 (Cheating) · Sec. 120B (Conspiracy)'},
+      {ico:'📋', name:'CrPC (Code of Criminal Procedure), 1973', sec:'Sec. 154 (FIR) · Sec. 161 (Witness exam) · Sec. 437 (Bail) · Sec. 482 (Inherent powers)'},
+      {ico:'🆕', name:'Bharatiya Nyaya Sanhita (BNS), 2023', sec:'Replaces IPC · Sec. 101 (Murder) · Sec. 63 (Rape) · Community service introduced'},
+      {ico:'📄', name:'Indian Evidence Act, 1872', sec:'Sec. 3 (Evidence) · Sec. 45 (Expert opinion) · Sec. 65B (Electronic evidence)'},
+    ],
+    articles:[
+      {num:'Article 20', title:'Protection against Ex Post Facto Laws', rel:'No conviction for act not an offence when done; no double jeopardy'},
+      {num:'Article 21', title:'Right to Life & Personal Liberty', rel:'Right to fair trial, legal aid, speedy justice and due process of law'},
+      {num:'Article 22', title:'Protection against Arbitrary Arrest', rel:'Must be informed of grounds; produced before magistrate within 24 hours'},
+    ],
+    keywords:['FIR','Bail','Cognizable','Chargesheet','Accused','Prosecution','Conviction','Acquittal','Mens Rea','Evidence'],
+    action:'File an FIR at the nearest police station. For non-cognizable offences, file a complaint before a Magistrate. Engage a criminal defence lawyer immediately and preserve all evidence.',
+  },
+  {
+    id:'civil', label:'Civil Law', color:'#3DB8D8', icon:'⚖️',
+    acts:[
+      {ico:'📜', name:'Code of Civil Procedure (CPC), 1908', sec:'Order VII (Plaint) · Order VIII (Written Statement) · Sec. 9 (Jurisdiction) · Sec. 96 (Appeal)'},
+      {ico:'🤝', name:'Indian Contract Act, 1872', sec:'Sec. 10 (Valid Contract) · Sec. 73 (Damages) · Sec. 56 (Frustration) · Sec. 74 (Penalty)'},
+      {ico:'🏠', name:'Transfer of Property Act, 1882', sec:'Sec. 5 (Transfer) · Sec. 54 (Sale) · Sec. 105 (Lease) · Sec. 58 (Mortgage)'},
+      {ico:'⏱️', name:'Limitation Act, 1963', sec:'3 years (general civil suits) · 12 years (property suits) · Art. 113 (residual)'},
+    ],
+    articles:[
+      {num:'Article 300A', title:'Right to Property', rel:'No person shall be deprived of property save by authority of law'},
+      {num:'Article 14', title:'Right to Equality', rel:'Equal protection of laws in all civil proceedings before courts'},
+      {num:'Article 21', title:'Right to Livelihood', rel:'Right to means of livelihood protected; arbitrary deprivation not permitted'},
+    ],
+    keywords:['Plaintiff','Defendant','Decree','Injunction','Damages','Partition','Succession','Mortgage','Limitation','Jurisdiction'],
+    action:'Consult a civil advocate to draft a Plaint under Order VII CPC. File in the court of competent pecuniary and territorial jurisdiction within the limitation period. Pay court fees based on suit valuation.',
+  },
+  {
+    id:'cyber', label:'Cyber Law', color:'#AA7AE8', icon:'💻',
+    acts:[
+      {ico:'🔐', name:'Information Technology (IT) Act, 2000', sec:'Sec. 43 (Damage) · Sec. 66 (Hacking) · Sec. 66C (Identity Theft) · Sec. 66E (Privacy)'},
+      {ico:'🔄', name:'IT (Amendment) Act, 2008', sec:'Sec. 66A (Offensive messages) · Sec. 67 (Obscenity) · Sec. 69 (Interception)'},
+      {ico:'🛡️', name:'Personal Data Protection Bill (PDPB), 2023', sec:'Consent-based processing · Data principal rights · Data fiduciary obligations'},
+      {ico:'📜', name:'IPC Sections 420 & 468', sec:'Cheating by personation · Forgery for cheating · Applicable to online fraud'},
+    ],
+    articles:[
+      {num:'Article 21', title:'Right to Privacy (Puttaswamy 2017)', rel:'Digital privacy is a fundamental right; data protection flows from Art. 21'},
+      {num:'Article 19(1)(a)', title:'Freedom of Speech & Expression', rel:'Online speech restrictions must be reasonable and proportionate to the aim'},
+      {num:'Article 19(2)', title:'Reasonable Restrictions', rel:'State may restrict online content on grounds of decency, security or public order'},
+    ],
+    keywords:['Hacking','Phishing','Identity Theft','Malware','Data Breach','OTP Fraud','Cyberstalking','Ransomware','Privacy','Dark Web'],
+    action:'File a complaint at cybercrime.gov.in or your nearest Cyber Cell. Preserve all digital evidence — screenshots, emails, logs, transaction IDs. FIR can be filed under IT Act Sec. 66 + IPC 420.',
+  },
+  {
+    id:'corporate', label:'Corporate Law', color:'#D4AA4A', icon:'🏢',
+    acts:[
+      {ico:'🏛️', name:'Companies Act, 2013', sec:'Sec. 166 (Directors\' duties) · Sec. 447 (Fraud) · Sec. 185 (Loans to directors) · Sec. 248 (Strike off)'},
+      {ico:'📈', name:'SEBI Act, 1992', sec:'Sec. 11 (Powers of SEBI) · Insider Trading Regulations 2015 · LODR Regulations 2015'},
+      {ico:'💼', name:'Insolvency & Bankruptcy Code (IBC), 2016', sec:'Sec. 7 (Financial creditor) · Sec. 9 (Operational creditor) · Sec. 31 (Resolution Plan)'},
+      {ico:'⚖️', name:'Competition Act, 2002', sec:'Sec. 3 (Anti-competitive agreements) · Sec. 4 (Abuse of dominance) · Sec. 6 (Combinations)'},
+    ],
+    articles:[
+      {num:'Article 19(1)(g)', title:'Freedom to Carry on Business', rel:'Right to practise any profession or carry on any trade — subject to reasonable restrictions'},
+      {num:'Article 301', title:'Freedom of Trade & Commerce', rel:'Trade and commerce shall be free throughout the territory of India'},
+      {num:'Article 39(b)', title:'Distribution of Wealth (DPSP)', rel:'State policy shall direct to prevent concentration of wealth and means of production'},
+    ],
+    keywords:['Director','Shareholder','Merger','Insolvency','SEBI','IPO','Insider Trading','NCLT','Winding Up','Compliance'],
+    action:'Consult a company law specialist. File complaints with MCA (mca.gov.in), SEBI, or approach NCLT/NCLAT as applicable. Preserve board resolutions, financial statements and all corporate documents.',
+  },
+  {
+    id:'family', label:'Family Law', color:'#4ACC8A', icon:'👨‍👩‍👧',
+    acts:[
+      {ico:'💍', name:'Hindu Marriage Act, 1955', sec:'Sec. 5 (Conditions) · Sec. 13 (Divorce) · Sec. 24 (Maintenance pendente lite) · Sec. 25 (Permanent alimony)'},
+      {ico:'🏠', name:'Hindu Succession Act, 1956', sec:'Sec. 6 (Coparcenary property) · Sec. 8 (General succession) · Sec. 15 (Female Hindu\'s property)'},
+      {ico:'🛡️', name:'Domestic Violence Act, 2005', sec:'Sec. 3 (Definition) · Sec. 12 (Application to Magistrate) · Sec. 17 (Right to shared household)'},
+      {ico:'👶', name:'Guardians & Wards Act, 1890', sec:'Sec. 7 (Child custody orders) · Welfare of child is paramount consideration'},
+    ],
+    articles:[
+      {num:'Article 14', title:'Right to Equality', rel:'Equal rights in matrimonial property, succession and inheritance for men and women'},
+      {num:'Article 21', title:'Right to Life & Dignity', rel:'Protection from domestic violence; child\'s right to welfare and dignity'},
+      {num:'Article 15', title:'Prohibition of Sex Discrimination', rel:'Special provisions for women and children permissible under Art. 15(3)'},
+    ],
+    keywords:['Divorce','Custody','Alimony','Maintenance','Dowry','Cruelty','Domestic Violence','Matrimonial','Guardianship','Stridhan'],
+    action:'Approach a Family Court or District Court. Consider mediation first — many matters can be resolved without full trial. File under Sec. 125 CrPC for maintenance. Consult a family law advocate for personal law applicable to you.',
+  },
+  {
+    id:'constitutional', label:'Constitutional', color:'#E0A04A', icon:'📜',
+    acts:[
+      {ico:'🏛️', name:'Constitution of India, 1950', sec:'Part III (Fundamental Rights Art.12–35) · Part IV (DPSPs Art.36–51) · Part IVA (Duties Art.51A)'},
+      {ico:'📋', name:'Right to Information Act, 2005', sec:'Sec. 3 (Right of citizens) · Sec. 6 (Application) · Sec. 8 (Exemptions) · Sec. 19 (Appeal)'},
+      {ico:'🗳️', name:'Representation of People Act, 1951', sec:'Electoral laws · Disqualification · Election disputes · Corrupt practices'},
+      {ico:'📚', name:'Right to Education Act, 2009', sec:'Art. 21A — Free and compulsory education for children aged 6–14 in neighbourhood schools'},
+    ],
+    articles:[
+      {num:'Articles 12–35', title:'Fundamental Rights (Part III)', rel:'Six categories of rights guaranteed to every citizen; justiciable before courts'},
+      {num:'Article 32', title:'Right to Constitutional Remedies', rel:'Dr. Ambedkar called this the "heart and soul" of the Constitution — 5 writs'},
+      {num:'Article 226', title:'Writ Jurisdiction of High Courts', rel:'HC can issue writs for enforcement of fundamental rights and any other legal rights'},
+    ],
+    keywords:['Writ','Habeas Corpus','Mandamus','Certiorari','Fundamental Rights','Judicial Review','Basic Structure','Amendment','Emergency','PIL'],
+    action:'File a Writ Petition under Article 32 before the Supreme Court or Article 226 before the relevant High Court. No court fees for writ petitions. Engage a constitutional law expert for complex matters.',
+  },
+  {
+    id:'labour', label:'Labour Law', color:'#CCCC4A', icon:'👷',
+    acts:[
+      {ico:'⚒️', name:'Industrial Disputes Act, 1947', sec:'Sec. 2(s) (Workman) · Sec. 25F (Retrenchment) · Sec. 25N (Prior permission) · Sec. 33 (Protected workmen)'},
+      {ico:'💰', name:'Payment of Gratuity Act, 1972', sec:'Sec. 4 (Gratuity after 5 yrs) · Sec. 7 (Determination) · Sec. 8 (Recovery) — Max: ₹20 lakh'},
+      {ico:'🏦', name:'Employees Provident Fund Act, 1952', sec:'Sec. 6 (Contribution 12%+12%) · Sec. 7A (Determination of dues) · EPF Scheme 1952'},
+      {ico:'⚠️', name:'POSH Act (Sexual Harassment), 2013', sec:'Sec. 3 (Prevention) · Sec. 4 (ICC) · Sec. 13 (Inquiry report) · Sec. 19 (Employer duties)'},
+    ],
+    articles:[
+      {num:'Article 21', title:'Right to Livelihood', rel:'Wrongful termination without due process violates the constitutionally protected right to livelihood'},
+      {num:'Article 23', title:'Prohibition of Forced Labour', rel:'Forced, bonded or compulsory labour is unconstitutional and punishable'},
+      {num:'Article 43', title:'Living Wage for Workers (DPSP)', rel:'State shall endeavour to secure living wage and decent conditions of work for all workers'},
+    ],
+    keywords:['Termination','Gratuity','Provident Fund','Retrenchment','Strike','Lockout','Union','Wages','Misconduct','Domestic Enquiry'],
+    action:'File a complaint with the Labour Commissioner. If conciliation fails, approach the Labour Court or Industrial Tribunal. For PF issues approach EPFO. For sexual harassment activate the Internal Complaints Committee (ICC).',
+  },
+  {
+    id:'ip', label:'IP Law', color:'#4ACCCC', icon:'💡',
+    acts:[
+      {ico:'✍️', name:'Copyright Act, 1957', sec:'Sec. 13 (Works protected) · Sec. 51 (Infringement) · Sec. 52 (Fair dealing) · Sec. 63 (Criminal liability)'},
+      {ico:'™️', name:'Trade Marks Act, 1999', sec:'Sec. 29 (Infringement) · Sec. 11 (Relative grounds for refusal) · Sec. 135 (Relief in suits)'},
+      {ico:'🔬', name:'Patents Act, 1970', sec:'Sec. 2(m) (Invention) · Sec. 48 (Rights of patentee) · Sec. 64 (Revocation) · Sec. 84 (Compulsory license)'},
+      {ico:'🎨', name:'Designs Act, 2000', sec:'Sec. 2(d) (Design) · Sec. 11 (Registration) · Sec. 22 (Piracy of registered design)'},
+    ],
+    articles:[
+      {num:'Article 300A', title:'Right to Property', rel:'Intellectual property is property; deprivation requires authority of law'},
+      {num:'Article 19(1)(g)', title:'Freedom to Exploit Creative Work', rel:'Right to commercially exploit one\'s creative, inventive or literary work'},
+      {num:'Article 21', title:'Right to Livelihood from Creation', rel:'Right to earn a livelihood from one\'s intellectual and creative work'},
+    ],
+    keywords:['Copyright','Trademark','Patent','Infringement','Plagiarism','Piracy','License','Royalty','Trade Secret','GI Tag'],
+    action:'Send a cease and desist notice immediately. File for interim injunction in the IP Division of the relevant High Court. Register your IP at the appropriate registry (Copyright Office, Trade Marks Registry, Patent Office).',
+  },
+];
+
+let cfActive = null;
+
+function cfInit(){
+  const btns = document.getElementById('cfDomainBtns');
+  if(!btns || btns.children.length > 0) return;
+
+  CF_DOMAINS.forEach(d => {
+    const b = document.createElement('button');
+    b.className = 'cf-domain-btn';
+    b.textContent = d.icon + ' ' + d.label;
+    b.onclick = () => cfShow(d.id);
+    b.id = 'cfBtn-' + d.id;
+    btns.appendChild(b);
+  });
+}
+
+function cfShow(id){
+  const domain = CF_DOMAINS.find(d => d.id === id);
+  if(!domain) return;
+
+  // Toggle off if already active
+  if(cfActive === id){
+    cfActive = null;
+    document.querySelectorAll('.cf-domain-btn').forEach(b => b.classList.remove('cf-active'));
+    document.getElementById('cfEmpty').style.display = 'block';
+    document.getElementById('cfContent').style.display = 'none';
+    return;
+  }
+
+  cfActive = id;
+
+  // Update button states
+  document.querySelectorAll('.cf-domain-btn').forEach(b => {
+    b.classList.remove('cf-active');
+    b.style.background = '';
+  });
+  const activeBtn = document.getElementById('cfBtn-' + id);
+  if(activeBtn){
+    activeBtn.classList.add('cf-active');
+    activeBtn.style.background = domain.color;
+  }
+
+  // Build content
+  const acts = domain.acts.map(a => `
+    <div class="cf-act-row">
+      <div class="cf-act-ico">${a.ico}</div>
+      <div>
+        <div class="cf-act-name">${a.name}</div>
+        <div class="cf-act-sec">${a.sec}</div>
+      </div>
+    </div>`).join('');
+
+  const articles = domain.articles.map(a => `
+    <div class="cf-art-row">
+      <div class="cf-art-num">${a.num}</div>
+      <div class="cf-art-title">${a.title}</div>
+      <div class="cf-art-rel">${a.rel}</div>
+    </div>`).join('');
+
+  const keywords = domain.keywords.map(k => `<span class="cf-kw">${k}</span>`).join('');
+
+  document.getElementById('cfContent').innerHTML = `
+    <div class="cf-layout">
+      <div class="cf-left">
+        <div class="cf-section-lbl" style="color:var(--gold);">📚 Applicable Laws &amp; Acts</div>
+        <div class="cf-acts">${acts}</div>
+      </div>
+      <div class="cf-right">
+        <div class="cf-section-lbl" style="color:var(--gold);">🏛️ Constitutional Articles</div>
+        <div class="cf-articles">${articles}</div>
+        <div style="margin-top:14px;">
+          <div class="cf-section-lbl" style="color:var(--gold);">🔍 Key Legal Terms</div>
+          <div class="cf-keywords">${keywords}</div>
+        </div>
+        <div class="cf-action-box">
+          <strong>⚡ Recommended Action</strong>
+          ${domain.action}
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('cfEmpty').style.display = 'none';
+  document.getElementById('cfContent').style.display = 'block';
+
+  // Animate in
+  document.getElementById('cfContent').style.animation = 'none';
+  setTimeout(() => {
+    document.getElementById('cfContent').style.animation = 'slideup .25s ease';
+  }, 10);
+}
+
+// Init when DOM ready
+document.addEventListener('DOMContentLoaded', cfInit);
+setTimeout(cfInit, 500);
+
+</script>
+</body>
+</html>
