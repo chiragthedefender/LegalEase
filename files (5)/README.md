@@ -1,6 +1,6 @@
 # ⚖ Dharma Lens — Legal Intelligence Platform
 
-## Quick Start
+## Quick Start guide
 
 ```bash
 # 1. Install dependencies (once)
