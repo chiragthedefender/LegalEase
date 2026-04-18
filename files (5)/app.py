@@ -2,6 +2,8 @@
 Dharma Lens – Backend v3
 Enhanced with legal content validation + online mode support
 Run: python3 app.py   →   http://localhost:5050
+not deployed
+
 """
 import os, sys, re, json, time, uuid
 from pathlib import Path
