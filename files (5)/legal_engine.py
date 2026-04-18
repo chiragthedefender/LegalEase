@@ -1,5 +1,6 @@
 """
 Dharma Lens – Legal NLP Engine v3
+imports in txt file
 Enhanced TF-IDF classifier with legal content validation
 """
 import re, math
